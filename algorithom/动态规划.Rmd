@@ -1,0 +1,43 @@
+---
+title: "动态规划"
+author: "Luca"
+date: "2023-08-10"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+动态规划方法是对问题暴力解法的优化。对于一个可以使用动态规划解决的问题，首先考虑如何使用简单不加优化的方法进行求解，然后识别方法中被重复计算的子问题。
+
+例如，[Leetcode.5.最长回文子串](https://leetcode.cn/submissions/detail/454289347/)
+
+1. 使用简单方法求解  
+直观的解法是使用两层循环，判断s[i:j]是否为回文子串。
+    ```{python eval=FALSE}
+    for i in range(len(s)):
+      for j in range(i+1, len(s)+1):
+        t = s[i:j]
+        if t == t[::-1] and len(t) > mlen:
+          mlen = len(t)
+          mstr = t
+    print(mstr)
+    ```
+2. 识别重复计算的子问题  
+当计算`s[i-n:j+n]`是否是回文子串时，都会判断`s[i,j]`是否是回文子串，因此子问题定义为判断`s[i,j]`是否是回文子串，记为$f(i, j)$（注意，对于本道题，问题本身和子问题**形式一致**）
+
+3. 考虑子问题如何求解
+$$
+f(i, j) =\left\{
+\begin{align}
+& True & i = j\\
+& f(i+1, j-1)\ \&\&\ s[i] == s[j] & i < j
+\end{align}\right.
+$$
+4. 设计求解顺序
+    ```{r setup, echo=FALSE}
+library(r2d3)
+r2d3(script = "../js/table-square.js", height = 170)
+    ```
+5. 构造原问题的解  
+如果知道了每一个$f(i,j)$的值，答案表示为$s[i, j]$, 其中 $\underset{i,j}{max} (j-i)$
