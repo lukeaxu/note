@@ -41,3 +41,22 @@ r2d3(script = "../js/table-square.js", height = 170)
     ```
 5. 构造原问题的解  
 如果知道了每一个$f(i,j)$的值，答案表示为$s[i, j]$, 其中 $\underset{i,j}{max} (j-i)$
+
+
+## 0-1 背包问题
+一共有 N 个物品，第 i 个物品重量为w[i]，价值为v[i]，其中$i\in[0,\ N-1]$，背包最多承重为 W，求能获得的最大价值是多少
+$$ f(i, j) =\left\{
+\begin{align}
+& f(i-1, j) & w[i] > j\\
+& max(f(i-1, j), f(i-1, j-w[i])+v[i]) & w[i] <= j 
+\end{align}\right.
+$$
+
+> 小红书Golang开发岗位2023笔试
+一共有 N 个物品，第 i 个物品重量为w[i]，体积为u[i]，价值为v[i]，其中$i\in[0,\ N-1]$，背包最多承重为 W，容积为 U，求能获得的最大价值是多少
+$$ f(i, j, k) =\left\{
+\begin{align}
+& f(i-1, j, k) & w[i] > j || u[i] > k\\
+& max(f(i-1, j, k), f(i-1, j-w[i], k-u[i])+v[i]) & w[i] <= j && u[i] <= k 
+\end{align}\right.
+$$
