@@ -1,0 +1,80 @@
+<html>
+
+<head>
+    <script src="../js/cytoscape.min.js"></script>
+</head>
+
+<body>
+    <!-- htmltools::includeHTML() below -->
+    <html>
+
+    <head></head>
+
+    <body>
+        <div id="cy" style="display: block; width: 400px; height: 400px;"></div>
+        <script>
+            var cy = cytoscape({
+                container: document.getElementById('cy'), // container to render in
+                elements: [ // list of graph elements to start with
+                    { data: { id: '9' }},
+                    { data: { id: '5' }},
+                    { data: { id: '13' }},
+                    { data: { id: '10' }},
+                    { data: { id: '12' }},
+                    { data: { id: '7' }},
+                    { data: { id: '17' }},
+                    { data: { id: '15' }},
+                    { data: { id: '19' }},
+                    { data: { id: 'e1', source: '9', target: '5' }},
+                    { data: { id: 'e2', source: '9', target: '13' }},
+                    { data: { id: 'e3', source: '5', target: '10' }},
+                    { data: { id: 'e4', source: '10', target: '12' }},
+                    { data: { id: 'e5', source: '12', target: '7' }},
+                    { data: { id: 'e6', source: '12', target: '17' }},
+                    { data: { id: 'e7', source: '17', target: '15' }},
+                    { data: { id: 'e8', source: '17', target: '19' }},
+                    { data: { id: 'e9', source: '19', target: '15' }},
+                    { data: { id: 'e10', source: '17', target: '7' }},
+                    { data: { id: 'e11', source: '7', target: '17' }},
+                    { data: { id: 'e12', source: '7', target: '5' }},
+                    { data: { id: 'e13', source: '7', target: '9' }},
+                    { data: { id: 'e14', source: '12', target: '10' }},
+                    { data: { id: 'e15', source: '10', target: '5' }},
+                    { data: { id: 'e16', source: '5', target: '9' }},
+                    { data: { id: 'e17', source: '13', target: '9' }},
+                ],
+                style: [ // the stylesheet for the graph
+                    {
+                        selector: 'node',
+                        style: {
+                            'background-color': '#666',
+                            'label': 'data(id)'
+                        }
+                    },
+
+                    {
+                        selector: 'edge',
+                        style: {
+                            'width': 3,
+                            'line-color': '#ccc',
+                            'target-arrow-color': '#ccc',
+                            'target-arrow-shape': 'triangle',
+                            'curve-style': 'bezier'
+                        }
+                    }
+                ],
+                // layout: {
+                //     name: 'grid',
+                //     rows: 1
+                // }
+
+            });
+        </script>
+    </body>
+
+    </html>
+    <!-- included above -->
+
+</body>
+
+</html>

@@ -35,4 +35,4 @@ var squares = svg.selectAll("rect")
     console.log(this)
   });
 //alert(squares)
-console.log(squares)
+//console.log(squares)
