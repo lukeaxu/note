@@ -9,11 +9,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Luca" />
 
-<meta name="date" content="2023-08-10" />
 
-<title>动态规划</title>
+<title>动态规划.knit</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -2129,9 +2127,6 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">动态规划</h1>
-<h4 class="author">Luca</h4>
-<h4 class="date">2023-08-10</h4>
 
 </div>
 
@@ -2139,20 +2134,23 @@ display: none;
 <ul>
 <li><a href="#树形动态规划" id="toc-树形动态规划">树形动态规划</a></li>
 <li><a href="#子问题的拆解" id="toc-子问题的拆解">子问题的拆解</a></li>
+<li><a href="#背包问题" id="toc-背包问题">0-1 背包问题</a></li>
+<li><a href="#动态规划到贪心" id="toc-动态规划到贪心">动态规划到贪心</a></li>
 </ul>
 </div>
 
-<p>动态规划方法是对问题暴力解法的优化。对于一个可以使用动态规划解决的问题，首先考虑如何使用简单不加优化的方法进行求解，然后识别方法中被重复计算的子问题。</p>
-<p>例如，<a href="https://leetcode.cn/submissions/detail/454289347/">Leetcode.5.最长回文子串</a></p>
+<p>动态规划方法是对问题暴力解法的优化。对于一个可以使用动态规划解决的问题，首先考虑如何使用简单不加优化的方法进行求解，然后识别方法中被重复计算的子问题</p>
+<p><a href="https://leetcode.cn/submissions/detail/454289347/">Leetcode.5.最长回文子串</a></p>
 <ol style="list-style-type: decimal">
 <li><p>使用简单方法求解<br />
 直观的解法是使用两层循环，判断s[i:j]是否为回文子串。</p>
-<pre class="python"><code>for i in range(len(s)):
+<pre class="python"><code>maxlen = 0
+for i in range(len(s)):
   for j in range(i+1, len(s)+1):
     t = s[i:j]
-    if t == t[::-1] and len(t) &gt; mlen:
-      mlen = len(t)
-      mstr = t
+    if t == t[::-1] and len(t) &gt; maxlen:
+      maxlen = j - i
+      maxstr = t
 print(mstr)</code></pre></li>
 <li><p>识别重复计算的子问题<br />
 当计算<code>s[i-n:j+n]</code>是否是回文子串时，都会判断<code>s[i,j]</code>是否是回文子串，因此子问题定义为判断<code>s[i,j]</code>是否是回文子串，记为<span class="math inline">\(f(i,
@@ -2165,36 +2163,40 @@ f(i, j) =\left\{
 \end{align}\right.
 \]</span></p></li>
 <li><p>设计求解顺序</p>
-<div id="htmlwidget-453d519d0c1fe4cd9baf" style="width:672px;height:170px;" class="r2d3 html-widget "></div>
-<script type="application/json" data-for="htmlwidget-453d519d0c1fe4cd9baf">{"x":{"data":null,"type":"NULL","container":"svg","options":null,"script":"var d3Script = function(d3, r2d3, data, svg, width, height, options, theme, console) {\nthis.d3 = d3;\n\nsvg = d3.select(svg.node());\n/* R2D3 Source File:  ../js/table-square.js */\n// !preview r2d3 data=c(0.3, 0.6, 0.8, 0.5, 0.40, 0.20)\n//\n// r2d3: https://rstudio.github.io/r2d3\n//\n\nvar rows = 5;\nvar cols = 5;\nvar size = 30;\nvar igap = 5;\nvar data = new Array(rows * cols).fill({});\n\nvar squares = svg.selectAll(\"rect\")\n  .data(data)\n  .enter()\n  .append(\"rect\")\n  .attr(\"x\", (d, i) => (i % cols) * (size + igap))\n  .attr(\"y\", (d, i) => parseInt(i / cols) * (size + igap))\n  .attr(\"width\", size)\n  .attr(\"height\", size)\n  .attr(\"fill\", (d, i) => {\n    // 计算索引值\n    var rowIndex = Math.floor(i / cols) + 1;\n    var colIndex = i % cols + 1;\n    if (rowIndex > colIndex) {\n      return \"gray\"\n    }\n    if (rowIndex == colIndex) {\n      return \"orange\"\n    } else {\n      return \"steelblue\"\n    }\n  })\n  .on('click', function(){\n    d3.select(this).attr('fill', 'red')\n    console.log(this)\n  });\n//alert(squares)\n//console.log(squares)\n};","style":null,"version":6,"theme":{"default":{"background":"#FFFFFF","foreground":"#000000"},"runtime":null},"useShadow":true},"evals":[],"jsHooks":[]}</script></li>
+<div id="htmlwidget-1989990f254039bd73fa" style="width:672px;height:170px;" class="r2d3 html-widget "></div>
+<script type="application/json" data-for="htmlwidget-1989990f254039bd73fa">{"x":{"data":null,"type":"NULL","container":"svg","options":null,"script":"var d3Script = function(d3, r2d3, data, svg, width, height, options, theme, console) {\nthis.d3 = d3;\n\nsvg = d3.select(svg.node());\n/* R2D3 Source File:  ../js/table-square.js */\n// !preview r2d3 data=c(0.3, 0.6, 0.8, 0.5, 0.40, 0.20)\n//\n// r2d3: https://rstudio.github.io/r2d3\n//\n\nvar rows = 5;\nvar cols = 5;\nvar size = 30;\nvar igap = 5;\nvar data = new Array(rows * cols).fill({});\n\nvar squares = svg.selectAll(\"rect\")\n  .data(data)\n  .enter()\n  .append(\"rect\")\n  .attr(\"x\", (d, i) => (i % cols) * (size + igap))\n  .attr(\"y\", (d, i) => parseInt(i / cols) * (size + igap))\n  .attr(\"width\", size)\n  .attr(\"height\", size)\n  .attr(\"fill\", (d, i) => {\n    // 计算索引值\n    var rowIndex = Math.floor(i / cols) + 1;\n    var colIndex = i % cols + 1;\n    if (rowIndex > colIndex) {\n      return \"gray\"\n    }\n    if (rowIndex == colIndex) {\n      return \"orange\"\n    } else {\n      return \"steelblue\"\n    }\n  })\n  .on('click', function(){\n    d3.select(this).attr('fill', 'red')\n    console.log(this)\n  });\n//alert(squares)\n//console.log(squares)\n};","style":null,"version":6,"theme":{"default":{"background":"#FFFFFF","foreground":"#000000"},"runtime":null},"useShadow":true},"evals":[],"jsHooks":[]}</script></li>
 <li><p>构造原问题的解<br />
 如果知道了每一个<span class="math inline">\(f(i,j)\)</span>的值，答案表示为<span class="math inline">\(s[i, j]\)</span>, 其中 <span class="math inline">\(\underset{i,j}{max} (j-i)\)</span></p></li>
 </ol>
-<div id="树形动态规划" class="section level2">
-<h2>树形动态规划</h2>
-<p><a href="https://leetcode.cn/problems/house-robber-iii/">337.
-打家劫舍 III</a></p>
-<p><a href="https://www.luogu.com.cn/problem/P1352">P1352.
-没有上司的舞会</a></p>
-<p><a href="https://mp.weixin.qq.com/s/NVSAjmmL48_PtLIOKXVQqg">2023.小红书/美团
-节点染色</a>
+<div id="树形动态规划" class="section level3">
+<h3>树形动态规划</h3>
+<p>例题：<a href="https://leetcode.cn/problems/house-robber-iii/">LeetCode.337.打家劫舍
+III</a> ， <a href="https://www.luogu.com.cn/problem/P1352">洛谷.P1352.没有上司的舞会</a>，
+<a href="https://mp.weixin.qq.com/s/NVSAjmmL48_PtLIOKXVQqg">2023.美团.节点染色</a></p>
+<p><a href="https://mp.weixin.qq.com/s/NVSAjmmL48_PtLIOKXVQqg">2023.美团.节点染色</a>
+：
 树中每个节点有一个权值。初始每个节点都是白色，每次操作可以选择两个相邻的节点，如果它们都是白色且权值的乘积是完全平方数，就可以把这两个节点同时染红，问最多可以染红多少个节点？</p>
-<p>动态规划是将问题拆解为子问题，而树的特点是一个父节点可以有多个子节点，正好表达一个问题可以拆解为多个子问题，因此，动态规划和树结合是非常自然的事情，求解顺序一般是自底向上（使用深度优先搜索）或者非递归做法（队列中保存出度为
-0 的节点（例如，洛谷1352.没有上司的舞会））</p>
-<p>如果是二叉树的动态规划，汇集左右节点的结果构成root的结果，如果是一般的树的话，多个节点，一般使用result[N][K]保存节点的结果，搭配邻接矩阵表示图的方法来使用。</p>
+<p>动态规划是将问题拆解为子问题，而树的特点是一个父节点可以有多个子节点，正好表达一个问题可以拆解为多个子问题，因此，动态规划和树结合是非常自然的事情，求解顺序一般是自底向上（使用深度优先搜索）或者非递归做法（从叶子节点开始求解）</p>
+<p>如果是二叉树的动态规划，汇集左右节点的结果构成root的结果，如果是一般的树的话，多个节点，一般使用
+<span class="math inline">\(array[N][K]\)</span>
+保存节点的结果，搭配邻接矩阵表示图的方法来使用。</p>
 </div>
-<div id="子问题的拆解" class="section level2">
-<h2>子问题的拆解</h2>
+<div id="子问题的拆解" class="section level3">
+<h3>子问题的拆解</h3>
 <p>拆解子问题的关键：</p>
 <ol style="list-style-type: decimal">
 <li>子问题的求解应该包含更小的子问题</li>
-<li>问题不应该影响子问题的求解</li>
+<li>子问题之间互不影响，原问题不影响子问题的求解</li>
 </ol>
-<p><a href="https://leetcode.cn/problems/the-maze-ii/?envType=study-plan-v2&amp;envId=premium-algo-100">505.
-迷宫 II</a></p>
-<p>把 S -&gt; E
-的最短路径，拆成S到子节点的路径长度+子节点到E的最短路径，即min(S -&gt;
-M<span class="math inline">\(_{1...n}\)</span>) + min(M<span class="math inline">\(_{1...n}\)</span> -&gt; E)，现在求子节点到</p>
+<p><a href="https://leetcode.cn/problems/the-maze-ii/?envType=study-plan-v2&amp;envId=premium-algo-100">LeetCode.505.迷宫
+II</a></p>
+<p>原来的思路是把这个问题拆分成几个更小的子问题，使用 <span class="math inline">\(d[n]\)</span> 表示从 <span class="math inline">\(n\)</span> 到终点 <span class="math inline">\(E\)</span> 的最短距离。假设 <span class="math inline">\(S\)</span> 有 <span class="math inline">\(k\)</span> 个孩子节点 <span class="math inline">\(M_i, i\in[1,k]\)</span>，那么问题转换为 <span class="math inline">\(d[s] = min(d[m_i]+L_{s,s_i})\)</span></p>
+<p>问题使用了更小的子问题去表示，计算 <span class="math inline">\(s\)</span>
+到终点的最短距离，只要计算出来孩子节点到终点的最短距离，根据上面公式就可得到
+<span class="math inline">\(d[s]\)</span></p>
+<p>如此拆解的合理性在于 <span class="math inline">\(d[n]\)</span>
+确实是客观存在的，问题在于图中存在环，子问题的求解不独立于原问题，这就导致不能使用动态规划实现求解，如下图计算
+9 到 24 的最短路径（每一次移动沿着某一方向直到不能前进）</p>
 <html>
 
 <head>
@@ -2234,80 +2236,191 @@ var Jo=function(){function e(e){return-e.tension*e.x-e.friction*e.v}function t(t
 </head>
 
 <body>
-    <!-- htmltools::includeHTML() below -->
-    <html>
+    <div style="display: flex;">
+        <div id="cy" style="display: block; height: 400px; flex: 1;"></div>
+        <div style="flex: 1;">
+            <canvas id="myCanvas" height="400px"></canvas>
+        </div>
+    </div>
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const context = canvas.getContext('2d');
 
-    <head></head>
+        const matrixSize = 5; // 矩阵大小
+        const rectSize = 40; // 每个矩形的大小
 
-    <body>
-        <div id="cy" style="display: block; width: 400px; height: 400px;"></div>
-        <script>
-            var cy = cytoscape({
-                container: document.getElementById('cy'), // container to render in
-                elements: [ // list of graph elements to start with
-                    { data: { id: '9' }},
-                    { data: { id: '5' }},
-                    { data: { id: '13' }},
-                    { data: { id: '10' }},
-                    { data: { id: '12' }},
-                    { data: { id: '7' }},
-                    { data: { id: '17' }},
-                    { data: { id: '15' }},
-                    { data: { id: '19' }},
-                    { data: { id: 'e1', source: '9', target: '5' }},
-                    { data: { id: 'e2', source: '9', target: '13' }},
-                    { data: { id: 'e3', source: '5', target: '10' }},
-                    { data: { id: 'e4', source: '10', target: '12' }},
-                    { data: { id: 'e5', source: '12', target: '7' }},
-                    { data: { id: 'e6', source: '12', target: '17' }},
-                    { data: { id: 'e7', source: '17', target: '15' }},
-                    { data: { id: 'e8', source: '17', target: '19' }},
-                    { data: { id: 'e9', source: '19', target: '15' }},
-                    { data: { id: 'e10', source: '17', target: '7' }},
-                    { data: { id: 'e11', source: '7', target: '17' }},
-                    { data: { id: 'e12', source: '7', target: '5' }},
-                    { data: { id: 'e13', source: '7', target: '9' }},
-                    { data: { id: 'e14', source: '12', target: '10' }},
-                    { data: { id: 'e15', source: '10', target: '5' }},
-                    { data: { id: 'e16', source: '5', target: '9' }},
-                    { data: { id: 'e17', source: '13', target: '9' }},
-                ],
-                style: [ // the stylesheet for the graph
-                    {
-                        selector: 'node',
-                        style: {
-                            'background-color': '#666',
-                            'label': 'data(id)'
-                        }
-                    },
+        for (let row = 0; row < 4; row++) {
+            for (let col = 0; col < 5; col++) {
+                const x = col * (rectSize + 10);
+                const y = row * (rectSize + 10) + 90;
+                context.fillStyle = 'gray'; // 矩形的颜色
+                context.fillRect(x, y, rectSize, rectSize); // 绘制矩形
 
-                    {
-                        selector: 'edge',
-                        style: {
-                            'width': 3,
-                            'line-color': '#ccc',
-                            'target-arrow-color': '#ccc',
-                            'target-arrow-shape': 'triangle',
-                            'curve-style': 'bezier'
-                        }
+                context.fillStyle = 'black'; // 文本的颜色
+                context.font = '16px Arial'; // 文本的字体大小和类型
+                context.textAlign = 'center'; // 文本的水平对齐方式
+                context.textBaseline = 'middle'; // 文本的垂直对齐方式
+
+                const text = ((row + 1) * matrixSize) + col; // 计算编号
+                context.fillText(text, x + rectSize / 2, y + rectSize / 2); // 绘制文本
+            }
+        }
+        obstacal = [[1, 3], [2, 0], [2, 1], [2, 3], [2, 4]]
+        obstacal.forEach(item => {
+            var row = item[0]
+            var col = item[1]
+            const x = col * (rectSize + 10);
+            const y = row * (rectSize + 10) + 90;
+            context.fillStyle = 'red'; // 矩形的颜色
+            context.fillRect(x, y, rectSize, rectSize); // 绘制矩形
+        })
+    </script>
+    <script>
+        var point = [9, 5, 14, 10, 12, 7, 22, 20, 24]
+        var edges = {
+            5: [10, 9],
+            7: [5, 9, 22],
+            9: [5, 14],
+            10: [5, 12],
+            12: [7, 10, 22],
+            22: [7, 20, 24],
+            14: [9],
+            24: [20],
+        }
+        var elements = []
+        point.forEach(i => {
+            elements.push({ data: { id: i } })
+        })
+        Object.keys(edges).forEach(source => {
+            edges[source].forEach(target => {
+                var si = Math.floor(source / 5)
+                var sj = source % 5
+                var ti = Math.floor(target / 5)
+                var tj = target % 5
+                var weight = 0
+                if (si == ti) weight = Math.abs(sj - tj)
+                else weight = Math.abs(si - ti)
+                elements.push({ data: { id: "e" + source + "-" + target, source: source, target: target, weight: weight} })
+            })
+        })
+        var cy = cytoscape({
+            container: document.getElementById('cy'), // container to render in
+            elements: elements,
+            style: [
+                {
+                    selector: 'node',
+                    style: {
+                        'background-color': '#666',
+                        'label': 'data(id)'
                     }
-                ],
-                // layout: {
-                //     name: 'grid',
-                //     rows: 1
-                // }
+                },
 
-            });
-        </script>
-    </body>
-
-    </html>
-    <!-- included above -->
-
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 3,
+                        'line-color': '#ccc',
+                        'target-arrow-color': '#ccc',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier',
+                        label: 'data(weight)',  // 使用标签属性作为边的标签
+                        'text-valign': 'center',  // 文本垂直居中
+                        'text-background-color': 'white',  // 文本背景颜色
+                        'text-background-opacity': 1,  // 文本背景透明度
+                        'text-background-padding': '4px',  // 文本背景内边距
+                        'text-background-shape': 'roundrectangle',  // 文本背景形状
+                        'text-border-color': 'black',  // 文本边框颜色
+                        'text-border-width': '1px',  // 文本边框宽度
+                        'text-border-opacity': 1,  // 文本边框透明度
+                        'text-border-style': 'solid'  // 文本边框样式
+                    }
+                }
+            ],
+            layout: { name: 'circle' }
+        });
+    </script>
 </body>
 
 </html>
-<p>在树中容易确定一个求解顺序，而在图中不容易确定求解顺序，所以并不适合在图中使用动态规划的解法。还有一点区别，动态规划不会对子问题的解进行更新，在求解最短路径中，发现了某个到某点的较短路径，则更新到某点的路径长度。</p>
+<p>动态规划不会对子问题的解更新，而在求解最短路径中，发现了到某点的较短路径后，则会发生更新。</p>
+<p>总结：树中容易确定一个求解顺序，而在图中不容易确定求解顺序，所以并不适合在图中使用动态规划的解法。</p>
+</div>
+<div id="背包问题" class="section level3">
+<h3>0-1 背包问题</h3>
+<p>经典问题</p>
+<p>一共有 N 个物品，第 i 个物品重量为w[i]，价值为v[i]，其中 <span class="math inline">\(i\in[0,\ N-1]\)</span>，背包最多承重为
+W，求能获得的最大价值是多少</p>
+<p><span class="math display">\[ f(i, j) =\left\{
+\begin{align}
+&amp; f(i-1, j) &amp;&amp; w[i] &gt; j\\
+&amp; max(f(i-1, j), f(i-1, j-w[i])+v[i]) &amp;&amp; w[i] &lt;= j
+\end{align}\right.
+\]</span></p>
+<p>2023.小红书</p>
+<p>一共有 N 个物品，第 i 个物品重量为w[i]，体积为u[i]，价值为v[i]，其中
+<span class="math inline">\(i\in[0,\ N-1]\)</span>，背包最多承重为
+W，容积为 U，求能获得的最大价值是多少</p>
+<p><span class="math display">\[ f(i, j, k) =\left\{
+\begin{align}
+&amp; f(i-1, j, k) &amp;&amp; w[i] &gt; j\vee u[i] &gt; k\\
+&amp; max(f(i-1, j, k), f(i-1, j-w[i], k-u[i])+v[i]) &amp;&amp; w[i]
+&lt;= j\land u[i] &lt;= k
+\end{align}\right.
+\]</span></p>
+</div>
+<div id="动态规划到贪心" class="section level3">
+<h3>动态规划到贪心</h3>
+<p><a href="https://mp.weixin.qq.com/s/ciDEVvUEvU55xCQQEGbp6Q">2023.讯飞.最多的好串</a></p>
+<p>字符串是“好串”，当且仅当该字符串的长度不小于2，且首尾相同。例如“arcaea”是好串。若将一个字符串（该字符串不一定是好串）切割成若干个好串，求出切割成好串的最多数量</p>
+<p>朴素的思路：<span class="math inline">\(f[i] = max(f[j-1] +
+1)\)</span>，其中满足 <span class="math inline">\(s[i] == s[j]\)</span>
+且 <span class="math inline">\(j&lt;i\)</span>，时间复杂度 <span class="math inline">\(O(n^2)\)</span></p>
+<pre class="python"><code>def solve1(n, s):
+    f = [-1 for _ in range(n + 1)]
+
+    f[0] = 0
+    for i in range(1, n + 1):
+        for j in range(1, i):
+            if s[j - 1] == s[i - 1] and f[j - 1] != -1:
+                f[i] = max(f[i], f[j - 1] + 1)
+
+    print(f[-1])</code></pre>
+<p>优化1：使用字典记录字符出现的索引（天然的递增序列），内层循环就可以跳过很多不必要的判断</p>
+<pre class="python"><code>def perfect_dp(s) -&gt; int:
+    n = len(s)
+    m = [-1]*(n+1)
+    m[n] = 0
+    dt = defaultdict(list)
+    for i, char in enumerate(list(s)):
+        dt[char].append(i)
+    
+    for i in range(n-1, -1, -1):
+        ichar = s[i]
+        iposi = dt[ichar]
+        # 这里其实也没有必要使用查找，沿着一个方向和当前的i比较就可
+        nidex = bisect.bisect_right(iposi, i)
+        for j in range(nidex, len(iposi)):
+            if m[iposi[j]+1] != -1:
+                m[i] = max(m[iposi[j]+1]+1, m[i])
+        #for j in range(len(iposi)-1, i, -1):
+        #    if m[iposi[j]+1] != -1:
+        #        m[i] = max(m[iposi[j]+1]+1, m[i])
+    return m[0]</code></pre>
+<p>优化2：对于字符i，只要记录之前相同的字符之后的最大值</p>
+<pre class="python"><code>def right_greedy(s) -&gt; int:
+    n = len(s)
+    m = [-1]*(n+1)
+    m[n] = 0
+    dt = defaultdict(lambda: (-1, -1))
+    
+    for i in range(n-1, -1, -1):
+        index, mlen = dt[s[i]]
+        if index != -1:
+            m[i] = 1 + mlen
+        nxt = m[i+1]
+        if nxt &gt; mlen:
+            dt[s[i]] = (i+1, nxt)
+    return m[0]</code></pre>
 </div>
 
 

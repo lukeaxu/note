@@ -1,26 +1,23 @@
 ---
-title: "动态规划"
-author: "Luca"
-date: "2023-08-10"
 output: 
   html_document:
     toc: true
-    toc_depth: 2
 ---
 
-动态规划方法是对问题暴力解法的优化。对于一个可以使用动态规划解决的问题，首先考虑如何使用简单不加优化的方法进行求解，然后识别方法中被重复计算的子问题。
+动态规划方法是对问题暴力解法的优化。对于一个可以使用动态规划解决的问题，首先考虑如何使用简单不加优化的方法进行求解，然后识别方法中被重复计算的子问题
 
-例如，[Leetcode.5.最长回文子串](https://leetcode.cn/submissions/detail/454289347/)
+[Leetcode.5.最长回文子串](https://leetcode.cn/submissions/detail/454289347/)
 
 1. 使用简单方法求解  
 直观的解法是使用两层循环，判断s[i:j]是否为回文子串。
     ```{python eval=FALSE}
+    maxlen = 0
     for i in range(len(s)):
       for j in range(i+1, len(s)+1):
         t = s[i:j]
-        if t == t[::-1] and len(t) > mlen:
-          mlen = len(t)
-          mstr = t
+        if t == t[::-1] and len(t) > maxlen:
+          maxlen = j - i
+          maxstr = t
     print(mstr)
     ```
 2. 识别重复计算的子问题  
@@ -42,29 +39,115 @@ r2d3(script = "../js/table-square.js", height = 170)
 5. 构造原问题的解  
 如果知道了每一个$f(i,j)$的值，答案表示为$s[i, j]$, 其中 $\underset{i,j}{max} (j-i)$
 
-## 树形动态规划
-[337. 打家劫舍 III](https://leetcode.cn/problems/house-robber-iii/) 
+### 树形动态规划
+例题：[LeetCode.337.打家劫舍 III](https://leetcode.cn/problems/house-robber-iii/) ，  [洛谷.P1352.没有上司的舞会](https://www.luogu.com.cn/problem/P1352)， [2023.美团.节点染色](https://mp.weixin.qq.com/s/NVSAjmmL48_PtLIOKXVQqg) 
 
-[P1352. 没有上司的舞会](https://www.luogu.com.cn/problem/P1352)
+[2023.美团.节点染色](https://mp.weixin.qq.com/s/NVSAjmmL48_PtLIOKXVQqg) ： 树中每个节点有一个权值。初始每个节点都是白色，每次操作可以选择两个相邻的节点，如果它们都是白色且权值的乘积是完全平方数，就可以把这两个节点同时染红，问最多可以染红多少个节点？
 
-[2023.小红书/美团 节点染色](https://mp.weixin.qq.com/s/NVSAjmmL48_PtLIOKXVQqg) 树中每个节点有一个权值。初始每个节点都是白色，每次操作可以选择两个相邻的节点，如果它们都是白色且权值的乘积是完全平方数，就可以把这两个节点同时染红，问最多可以染红多少个节点？
+动态规划是将问题拆解为子问题，而树的特点是一个父节点可以有多个子节点，正好表达一个问题可以拆解为多个子问题，因此，动态规划和树结合是非常自然的事情，求解顺序一般是自底向上（使用深度优先搜索）或者非递归做法（从叶子节点开始求解）
 
-动态规划是将问题拆解为子问题，而树的特点是一个父节点可以有多个子节点，正好表达一个问题可以拆解为多个子问题，因此，动态规划和树结合是非常自然的事情，求解顺序一般是自底向上（使用深度优先搜索）或者非递归做法（队列中保存出度为 0 的节点（例如，洛谷1352.没有上司的舞会））
+如果是二叉树的动态规划，汇集左右节点的结果构成root的结果，如果是一般的树的话，多个节点，一般使用 $array[N][K]$ 保存节点的结果，搭配邻接矩阵表示图的方法来使用。
 
-如果是二叉树的动态规划，汇集左右节点的结果构成root的结果，如果是一般的树的话，多个节点，一般使用result[N][K]保存节点的结果，搭配邻接矩阵表示图的方法来使用。
-
-## 子问题的拆解
+### 子问题的拆解
 拆解子问题的关键：
 
 1. 子问题的求解应该包含更小的子问题
-2. 问题不应该影响子问题的求解
+2. 子问题之间互不影响，原问题不影响子问题的求解
 
-[505. 迷宫 II](https://leetcode.cn/problems/the-maze-ii/?envType=study-plan-v2&envId=premium-algo-100)
+[LeetCode.505.迷宫 II](https://leetcode.cn/problems/the-maze-ii/?envType=study-plan-v2&envId=premium-algo-100)
 
-把 S -> E 的最短路径，拆成S到子节点的路径长度+子节点到E的最短路径，即min(S -> M$_{1...n}$) + min(M$_{1...n}$ -> E)，现在求子节点到
+原来的思路是把这个问题拆分成几个更小的子问题，使用 $d[n]$ 表示从 $n$ 到终点 $E$ 的最短距离。假设 $S$ 有 $k$ 个孩子节点 $M_i, i\in[1,k]$，那么问题转换为 $d[s] = min(d[m_i]+L_{s,s_i})$
+
+问题使用了更小的子问题去表示，计算 $s$ 到终点的最短距离，只要计算出来孩子节点到终点的最短距离，根据上面公式就可得到 $d[s]$
+
+如此拆解的合理性在于 $d[n]$ 确实是客观存在的，问题在于图中存在环，子问题的求解不独立于原问题，这就导致不能使用动态规划实现求解，如下图计算 9 到 24 的最短路径（每一次移动沿着某一方向直到不能前进）
+
 
 ```{r, echo=FALSE}
 htmltools::includeHTML("../html/node.html")
 ```
-在树中容易确定一个求解顺序，而在图中不容易确定求解顺序，所以并不适合在图中使用动态规划的解法。还有一点区别，动态规划不会对子问题的解进行更新，在求解最短路径中，发现了某个到某点的较短路径，则更新到某点的路径长度。
+动态规划不会对子问题的解更新，而在求解最短路径中，发现了到某点的较短路径后，则会发生更新。
 
+总结：树中容易确定一个求解顺序，而在图中不容易确定求解顺序，所以并不适合在图中使用动态规划的解法。
+
+### 0-1 背包问题
+经典问题
+
+一共有 N 个物品，第 i 个物品重量为w[i]，价值为v[i]，其中 $i\in[0,\ N-1]$，背包最多承重为 W，求能获得的最大价值是多少
+
+$$ f(i, j) =\left\{
+\begin{align}
+& f(i-1, j) && w[i] > j\\
+& max(f(i-1, j), f(i-1, j-w[i])+v[i]) && w[i] <= j 
+\end{align}\right.
+$$
+
+2023.小红书
+
+一共有 N 个物品，第 i 个物品重量为w[i]，体积为u[i]，价值为v[i]，其中 $i\in[0,\ N-1]$，背包最多承重为 W，容积为 U，求能获得的最大价值是多少
+
+$$ f(i, j, k) =\left\{
+\begin{align}
+& f(i-1, j, k) && w[i] > j\vee u[i] > k\\
+& max(f(i-1, j, k), f(i-1, j-w[i], k-u[i])+v[i]) && w[i] <= j\land u[i] <= k 
+\end{align}\right.
+$$
+
+### 动态规划到贪心
+[2023.讯飞.最多的好串](https://mp.weixin.qq.com/s/ciDEVvUEvU55xCQQEGbp6Q)
+
+字符串是“好串”，当且仅当该字符串的长度不小于2，且首尾相同。例如“arcaea”是好串。若将一个字符串（该字符串不一定是好串）切割成若干个好串，求出切割成好串的最多数量
+
+朴素的思路：$f[i] = max(f[j-1] + 1)$，其中满足 $s[i] == s[j]$ 且 $j<i$，时间复杂度 $O(n^2)$
+```{python, eval=FALSE}
+def solve1(n, s):
+    f = [-1 for _ in range(n + 1)]
+
+    f[0] = 0
+    for i in range(1, n + 1):
+        for j in range(1, i):
+            if s[j - 1] == s[i - 1] and f[j - 1] != -1:
+                f[i] = max(f[i], f[j - 1] + 1)
+
+    print(f[-1])
+```
+优化1：使用字典记录字符出现的索引（天然的递增序列），内层循环就可以跳过很多不必要的判断
+```{python, eval=FALSE}
+def perfect_dp(s) -> int:
+    n = len(s)
+    m = [-1]*(n+1)
+    m[n] = 0
+    dt = defaultdict(list)
+    for i, char in enumerate(list(s)):
+        dt[char].append(i)
+    
+    for i in range(n-1, -1, -1):
+        ichar = s[i]
+        iposi = dt[ichar]
+        # 这里其实也没有必要使用查找，沿着一个方向和当前的i比较就可
+        nidex = bisect.bisect_right(iposi, i)
+        for j in range(nidex, len(iposi)):
+            if m[iposi[j]+1] != -1:
+                m[i] = max(m[iposi[j]+1]+1, m[i])
+        #for j in range(len(iposi)-1, i, -1):
+        #    if m[iposi[j]+1] != -1:
+        #        m[i] = max(m[iposi[j]+1]+1, m[i])
+    return m[0]
+```
+优化2：对于字符i，只要记录之前相同的字符之后的最大值
+```{python, eval=FALSE}
+def right_greedy(s) -> int:
+    n = len(s)
+    m = [-1]*(n+1)
+    m[n] = 0
+    dt = defaultdict(lambda: (-1, -1))
+    
+    for i in range(n-1, -1, -1):
+        index, mlen = dt[s[i]]
+        if index != -1:
+            m[i] = 1 + mlen
+        nxt = m[i+1]
+        if nxt > mlen:
+            dt[s[i]] = (i+1, nxt)
+    return m[0]
+```
