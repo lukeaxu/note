@@ -2,3 +2,7 @@ Multi-process Architecture
 https://www.chromium.org/developers/design-documents/multi-process-architecture/
 How Chromium Displays Web Pages
 https://www.chromium.org/developers/design-documents/displaying-a-web-page-in-chrome/
+Multi-process Resource Loading
+https://www.chromium.org/developers/design-documents/multi-process-resource-loading/
+Design documents
+https://www.chromium.org/developers/design-documents/
