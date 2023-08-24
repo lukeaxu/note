@@ -1,0 +1,18 @@
+---
+output: 
+  html_document:
+    toc: true
+---
+
+二分查找必然是在一个有序的范围内进行查找，可以看作一个是一个利用有序的规律进行快速枚举的算法，假设判断当前枚举值是否有效的时间复杂度为$O(k)$，那个使用二分查找方法的整体时间复杂度为$O(k\cdot logn)$.
+
+[LeetCode.1231.分享巧克力](https://leetcode.cn/problems/divide-chocolate/?envType=study-plan-v2&envId=premium-algo-100)：枚举有效值
+
+[LeetCode.644.子数组最大平均数II](https://leetcode.cn/problems/maximum-average-subarray-ii/?envType=study-plan-v2&envId=premium-algo-100)：在浮点数范围内不断收缩区间，求问题较精确的解
+
+常见的有序信息：
+
+- 数组本身即有序
+- 前缀和
+- 元素出现的位置索引
+
